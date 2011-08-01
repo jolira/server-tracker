@@ -1,0 +1,26 @@
+{
+  "name": "server-tracker",
+  "description": "track performance and other information from servers, write the data into mongodb, and hand it out to clients for visualization",
+  "url" : "http://github.com/jolia/server-tracker",
+  "version": "0.0.1",
+  "author": "Joachim Kainz <info@jolira.com>",
+  "contributors": [ 
+    { "name": "Joachim Kainz", "email": "info@jolira.com" },
+    { "name": "Joe Hudson", "email": "info@jolira.com" }
+  ],
+  "keywords": ["monitoring", "enterprise"],
+  "repository": "git://github.com/jolira/server-tracker",
+  "main": "index",
+  "bin": { "server-tracker": "./bin/server-tracker" },
+  "scripts": {
+    "test": "make test",
+    "prepublish" : "npm prune"
+  },
+  "engines": { "node": ">= 0.4.1" },
+  "dependencies": {
+    "express": ">= 2.4.2",
+    "mustachio": ">= 0.2.0",
+    "connect": ">= 1.6.0",
+    "underscore": ">= 1.1.7"
+  }
+}

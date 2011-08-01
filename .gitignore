@@ -1,0 +1,11 @@
+.classpath
+.project
+target
+.settings
+.settings.xml
+bin
+MANIFEST.MF
+CVS
+.cvsignore
+*.log
+node_modules
