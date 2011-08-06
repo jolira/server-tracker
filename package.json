@@ -21,6 +21,7 @@
     "express": ">= 2.4.2",
     "mustachio": ">= 0.2.0",
     "connect": ">= 1.6.0",
-    "underscore": ">= 1.1.7"
+    "underscore": ">= 1.1.7",
+    "mongodb": ">= "0.9.6-9"
   }
 }

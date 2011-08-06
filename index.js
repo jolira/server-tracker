@@ -1,5 +1,6 @@
 var express = require('express');
 var mustachio = require('mustachio');
+var metricServer = require('./lib/metric-server');
 
 var app = module.exports = express.createServer();
 
@@ -26,6 +27,9 @@ app.configure('production', function() {
 });
 
 // Routes
+app.post('/submit/metric', function(req, res) {
+    metricServer.postMetric(req, res);
+});
 
 app.get('/', function(req, res) {
     res.render('index', {

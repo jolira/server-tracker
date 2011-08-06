@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+var http = require('http');
+
+var options = {
+  host: 'localhost',
+  port: 3080,
+  path: '/submit/metric',
+  method: 'POST',
+  headers: {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+  }
+};
+
+
+var payload = {
+  "cycles": {
+    "netResponseTime":11,
+    "requestID":12,
+    "requestedURL":"http:\/\/graz.walmart.com\/m\/r\/images\/sprites\/home_icons.png",
+    "responseTime":18,
+    "startTime":1312647947464
+  },
+  "hostname":"graz"
+};
+
+var req = http.request(options, function(res) {
+  console.log('STATUS: ' + res.statusCode);
+  console.log('HEADERS: ' + JSON.stringify(res.headers));
+  res.setEncoding('utf8');
+  res.on('data', function (chunk) {
+    console.log('BODY: ' + chunk);
+  });
+});
+
+req.on('error', function(e) {
+  console.log('problem with request: ' + e.message);
+});
+
+// write data to request body
+req.write(JSON.stringify(payload));
+req.end();
