@@ -1,12 +1,25 @@
-var util = require('util');
 var express = require('express');
 var mustachio = require('mustachio');
 var MetricServer = require('./lib/metric-server');
 var Server = require('./lib/server');
+var openDB = require('./lib/db');
+var scrapeJXM = require('./lib/jmx-scrapper');
 
-module.exports = function(listenPort, database, dbServer, dbPort) {
+module.exports = function(options) {
+    options = options ? options : {};
+
+    var listenPort = options.listenPort ? options.listenPort : 3080;
+    var database = options.database ? options.database : "metrics";
+    var dbServer = options.dbServer ? options.dbServer : "localhost";
+    var dbPort = options.dbPort ? options.dbPort : 27017;
+
+    console.log("{listenPort: %d, database: %s, db-server: %s, dbPort: %d}", listenPort, database, dbServer, dbPort);
+
     var server = new Server();
-    var metricServer = new MetricServer(database, dbServer, dbPort);
+    var db = openDB(database, dbServer, dbPort);
+    var metricServer = new MetricServer(db);
+
+    scrapeJXM(db, options.jmx);
 
     // Routes
     server.post('/submit/metric', function(req, res) {
