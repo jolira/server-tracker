@@ -102,10 +102,13 @@ com.wm.data.Viewer = function(id, url, payload, parameters) {
 
         var _this = this;
 
-        console.log("Getting data: " + url);
+        console.log("posting data: " + url);
         dojo.xhrPost({
             url : url,
             handleAs : "json",
+            headers : {
+                "Content-Type" : "application/json"
+            },
             postData : dojo.toJson(this.payload),
             load : function(data) {
                 if (!data) {
@@ -197,7 +200,7 @@ com.wm.data.Viewer = function(id, url, payload, parameters) {
         });
     };
 
-    // _.bindAll(this, "onMouseDown", "onMouseUp", "render");
+    _.bindAll(this, "onMouseDown", "onMouseUp", "render");
 }
 
 com.wm.data.viewerIntervalRefresh = function(id) {

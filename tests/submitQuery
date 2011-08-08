@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 var http = require('http');
+var server = process.argv.length > 2 ? process.argv [2] : "localhost";
 
 var options = {
-  host: 'localhost',
+  host: server,
   port: 3080,
   path: '/query',
   method: 'POST',
