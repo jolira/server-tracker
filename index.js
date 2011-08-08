@@ -29,7 +29,7 @@ module.exports = function(options) {
     });
 
     // Routes
-    server.post('/query', function(req, res) {
+    server.post('/query*', function(req, res) {
         queryServer.postQuery(req, res);
     });
 
