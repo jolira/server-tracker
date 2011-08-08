@@ -25,7 +25,8 @@ var payload = {
       "HeapMemoryUsage used" : {
         "timestamp" : "response.timestamp",
         "field" : "response.value.HeapMemoryUsage.used",
-        "qualifiers" : {}
+        "qualifiers" : {},
+        "operation" : "AVG"
       }
     }, 
   },
