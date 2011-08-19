@@ -45,12 +45,18 @@
     var payload = {
       "start":now - 15 * 60 * 1000,
       "end" : now,
-      "count" : 40,
+      "count" : 60,
       "collections" : {
         "jmx" : {
            "HeapMemoryUsage used" : {
            "timestamp" : "response.timestamp",
            "field" : "response.value.HeapMemoryUsage.used",
+           "qualifiers" : {},
+           "operation" : "AVG"
+          },
+           "HeapMemoryUsage committed" : {
+           "timestamp" : "response.timestamp",
+           "field" : "response.value.HeapMemoryUsage.committed",
            "qualifiers" : {},
            "operation" : "AVG"
           }
