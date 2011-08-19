@@ -2,7 +2,7 @@
   "name": "server-tracker",
   "description": "track performance and other information from servers, write the data into mongodb, and hand it out to clients for visualization",
   "url" : "http://github.com/jolia/server-tracker",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "Joachim Kainz <info@jolira.com>",
   "contributors": [
     { "name": "Joachim Kainz", "email": "info@jolira.com" },
