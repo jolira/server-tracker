@@ -7,31 +7,29 @@ var openDB = require('./lib/db');
 var scrapeJXM = require('./lib/jmx-scrapper');
 
 module.exports = function(options) {
-    options = options ? options : {};
+    var mongo = options.mongo ? options.mongo : {};
 
-    var listenPort = options.listenPort ? options.listenPort : 3080;
-    var database = options.database ? options.database : "metrics";
-    var dbServer = options.dbServer ? options.dbServer : "localhost";
-    var dbPort = options.dbPort ? options.dbPort : 27017;
+    openDB(mongo, function(db) {
+        var metricServer = new MetricServer(db);
+        var queryServer = new QueryServer(db);
 
-    console.log("{listenPort: %d, database: %s, db-server: %s, dbPort: %d}", listenPort, database, dbServer, dbPort);
+        scrapeJXM(db, options.jmx);
 
-    var server = new Server();
-    var db = openDB(database, dbServer, dbPort);
-    var metricServer = new MetricServer(db);
-    var queryServer = new QueryServer(db);
+        var server = new Server();
 
-    scrapeJXM(db, options.jmx);
+        // Routes
+        server.post('/submit/metric', function(req, res) {
+            metricServer.postMetric(req, res);
+        });
+        server.post('/query*', function(req, res) {
+            queryServer.postQuery(req, res);
+        });
 
-    // Routes
-    server.post('/submit/metric', function(req, res) {
-        metricServer.postMetric(req, res);
+        // Listen
+        var listenPort = options.listenPort ? options.listenPort : 3080;
+
+        console.info("Listening to port %d", listenPort);
+
+        server.listen(listenPort);
     });
-
-    // Routes
-    server.post('/query*', function(req, res) {
-        queryServer.postQuery(req, res);
-    });
-
-    server.listen(listenPort);
 };
