@@ -5,43 +5,59 @@ var MetricServer = require('./lib/metric-server');
 var QueryServer = require('./lib/query-server');
 var Server = require('./lib/server');
 var openDB = require('./lib/db');
-var scrapeJXM = require('./lib/jmx-scrapper');
+var jmxScrapper = require('./lib/jmx-scrapper');
+
+function startServices(server, db, config) {
+    var services = {
+        metricServer : new MetricServer(db),
+        queryServer : new QueryServer(db),
+    };
+
+    if (config.properties.jmx) {
+        config.properties.jmx = {};
+    }
+
+    services.jmx = jmxScrapper.start(db, config);
+
+    // Routes
+    server.post('/submit/metric', function(req, res) {
+        services.metricServer.postMetric(req, res);
+    });
+    server.post('/query*', function(req, res) {
+        services.queryServer.postQuery(req, res);
+    });
+
+    return services;
+}
+
+function stopServices(services) {
+    jmxScrapper.start(services.jmx);
+}
+
+function startServer(options) {
+    var listenPort = options.listenPort ? options.listenPort : 3080;
+    var server = new Server();
+
+    console.info("Listening to port %d", listenPort);
+
+    server.listen(listenPort);
+
+    return server;
+}
 
 module.exports = function(options) {
     var mongo = options.mongo ? options.mongo : {};
+    var server = startServer(options);
 
     openDB(mongo, function(db) {
         configuration(db, function(config) {
-            var metricServer = new MetricServer(db);
-            var queryServer = new QueryServer(db);
-            // var metaServer = new MetaServer(db, [ scrapeJXM.collection,
-            // MetricServer.collection ]);
+            var services = startServices(server, db, config);
 
-            if (config.jmx) {
-                config.jmx = {};
-            }
+            config.on('change', function(config) {
+                stopServices(services);
 
-            scrapeJXM.run(db, config);
-
-            var server = new Server();
-
-            // Routes
-            server.post('/submit/metric', function(req, res) {
-                metricServer.postMetric(req, res);
+                services = startServices(server, db, config);
             });
-            server.post('/query*', function(req, res) {
-                queryServer.postQuery(req, res);
-            });
-            server.post('/meta*', function(req, res) {
-                metaServer.postQuery(req, res);
-            });
-
-            // Listen
-            var listenPort = options.listenPort ? options.listenPort : 3080;
-
-            console.info("Listening to port %d", listenPort);
-
-            server.listen(listenPort);
         });
     });
 };
