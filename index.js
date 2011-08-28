@@ -1,5 +1,3 @@
-var express = require('express');
-var mustachio = require('mustachio');
 var configuration = require('./lib/config');
 var MetricServer = require('./lib/metric-server');
 var QueryServer = require('./lib/query-server');
@@ -31,33 +29,36 @@ function startServices(server, db, config) {
 }
 
 function stopServices(services) {
-    jmxScrapper.start(services.jmx);
+    jmxScrapper.stop(services);
 }
 
-function startServer(options) {
+function ServerTracker(options) {
     var listenPort = options.listenPort ? options.listenPort : 3080;
-    var server = new Server();
 
-    console.info("Listening to port %d", listenPort);
-
-    server.listen(listenPort);
-
-    return server;
+    this.server = new Server();
+    this.server.listen(listenPort);
 }
+
+ServerTracker.prototype.stop = function() {
+    this.server.stop();
+    stopServices(this.services);
+};
 
 module.exports = function(options) {
+    var server = new ServerTracker(options);
     var mongo = options.mongo ? options.mongo : {};
-    var server = startServer(options);
 
     openDB(mongo, function(db) {
         configuration(db, function(config) {
-            var services = startServices(server, db, config);
+            server.services = startServices(server.server, db, config);
 
             config.on('change', function(config) {
-                stopServices(services);
+                stopServices(server.services);
 
-                services = startServices(server, db, config);
+                server.services = startServices(server.server, db, config);
             });
         });
     });
+
+    return server;
 };
