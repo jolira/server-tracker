@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var configuration = require("../lib/config");
+var openDB = require('../lib/db');
+var util = require('util');
+
+console.info("node version %s", process.version);
+process.title = "config-tracker";
+
+function read(file, callback) {
+  fs.readFile(process.argv[2], "utf-8", function (err, data) {
+    if (err) {
+      throw err;
+    }
+
+    var options = JSON.parse(data);
+
+    callback(options);
+  });
+}
+
+function updateConfig(options, newConfigFile) {
+    var mongo = options.mongo ? options.mongo : {};
+
+    openDB(mongo, function(db) {
+      configuration(db, function(config) {
+        if (newConfigFile) {
+          read(newConfigFile, function(props) {
+            config.save(props);
+            process.exit(0);
+          });
+        }
+        else {
+          console.log("existing=%s", util.inspect(config.properties, false, 100));
+          process.exit(0);
+        }
+      });
+    });
+}
+
+if (process.argv.length < 3) {
+  updateConfig({});
+  return;
+}
+
+if (process.argv.length < 4) {
+  updateConfig({}, process.argv[2]);
+  return;
+}
+
+read(process.argv[2], function(properties){
+  updateConfiguration(properties, process.argv[3]);
+});

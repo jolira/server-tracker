@@ -1,9 +1,9 @@
-var configuration = require('./lib/config');
+var jmxScrapper = require('./lib/jmx-scrapper');
 var MetricServer = require('./lib/metric-server');
 var QueryServer = require('./lib/query-server');
+var configuration = require('./lib/config');
 var Server = require('./lib/server');
 var openDB = require('./lib/db');
-var jmxScrapper = require('./lib/jmx-scrapper');
 
 function startServices(server, db, config) {
     var services = {
@@ -11,7 +11,7 @@ function startServices(server, db, config) {
         queryServer : new QueryServer(db),
     };
 
-    if (config.properties.jmx) {
+    if (!config.properties.jmx) {
         config.properties.jmx = {};
     }
 

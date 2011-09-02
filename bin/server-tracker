@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var server = require("../index");
+var svr;
+
+console.info("node version %s", process.version);
+process.title = "server-tracker";
+
+process.on('SIGINT', function() {
+    console.log('Shutting down...');
+    svr.stop();
+    process.exit(1);
+});
+
+if (process.argv.length < 3) {
+  svr = server({});
+  return;
+}
+
+fs.readFile(process.argv[2], "utf-8", function (err, data) {
+  if (err) {
+    throw err;
+  }
+
+  var options = JSON.parse(data);
+
+  svr = server(options);
+});
