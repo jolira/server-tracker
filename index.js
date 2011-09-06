@@ -6,59 +6,59 @@ var Server = require('./lib/server');
 var openDB = require('./lib/db');
 
 function startServices(server, db, config) {
-    var services = {
-        metricServer : new MetricServer(db),
-        queryServer : new QueryServer(db),
-    };
+  var services = {
+    metricServer : new MetricServer(db),
+    queryServer : new QueryServer(db, config),
+  };
 
-    if (!config.properties.jmx) {
-        config.properties.jmx = {};
-    }
+  if (!config.properties.jmx) {
+    config.properties.jmx = {};
+  }
 
-    services.jmx = jmxScrapper.start(db, config);
+  services.jmx = jmxScrapper.start(db, config);
 
-    // Routes
-    server.post('/submit/metric', function(req, res) {
-        services.metricServer.postMetric(req, res);
-    });
-    server.post('/query*', function(req, res) {
-        services.queryServer.postQuery(req, res);
-    });
+  // Routes
+  server.post('/submit/metric', function(req, res) {
+    services.metricServer.postMetric(req, res);
+  });
+  server.post('/query', function(req, res) {
+    services.queryServer.postQuery(req, res);
+  });
 
-    return services;
+  return services;
 }
 
 function stopServices(services) {
-    jmxScrapper.stop(services);
+  jmxScrapper.stop(services);
 }
 
 function ServerTracker(options) {
-    var listenPort = options.listenPort ? options.listenPort : 3080;
+  var listenPort = options.listenPort ? options.listenPort : 3080;
 
-    this.server = new Server();
-    this.server.listen(listenPort);
+  this.server = new Server();
+  this.server.listen(listenPort);
 }
 
 ServerTracker.prototype.stop = function() {
-    this.server.stop();
-    stopServices(this.services);
+  this.server.stop();
+  stopServices(this.services);
 };
 
 module.exports = function(options) {
-    var server = new ServerTracker(options);
-    var mongo = options.mongo ? options.mongo : {};
+  var server = new ServerTracker(options);
+  var mongo = options.mongo ? options.mongo : {};
 
-    openDB(mongo, function(db) {
-        configuration(db, function(config) {
-            server.services = startServices(server.server, db, config);
+  openDB(mongo, function(db) {
+    configuration(db, function(config) {
+      server.services = startServices(server.server, db, config);
 
-            config.on('change', function(config) {
-                stopServices(server.services);
+      config.on('change', function(config) {
+        stopServices(server.services);
 
-                server.services = startServices(server.server, db, config);
-            });
-        });
+        server.services = startServices(server.server, db, config);
+      });
     });
+  });
 
-    return server;
+  return server;
 };
