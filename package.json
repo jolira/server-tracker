@@ -10,7 +10,7 @@
   ],
   "keywords": ["monitoring", "enterprise"],
   "repository": "git://github.com/jolira/server-tracker",
-  "main": "index",
+  "main": "server",
   "bin": { "server-tracker": "./bin/server-tracker" },
   "scripts": {
     "test": "make test",
@@ -18,11 +18,13 @@
   },
   "engines": { "node": ">= 0.4.9" },
   "dependencies": {
-    "express": ">= 2.4.2",
-    "mustachio": ">= 0.2.0",
-    "connect": ">= 1.6.0",
+    "express": ">= 2.4.6",
+    "connect": ">= 1.7.1",
     "underscore": ">= 1.1.7",
     "mongodb": ">= 0.9.6-9",
     "jolokia-client": ">= 0.0.7"
+  },
+  "devDependencies": {
+    "v8-profiler" : "0.0.3"
   }
 }

@@ -4,6 +4,17 @@ var fs = require('fs');
 var server = require("../index");
 var svr;
 
+var argv = process.argv;
+
+for (var idx=2; idx<argv.length; idx++) {
+  var arg = argv[idx];
+
+  if (arg === "--profile") {
+    require("v8-profiler");
+    argv.splice(idx, 1);
+  }
+}
+
 console.info("node version %s", process.version);
 process.title = "server-tracker";
 
@@ -13,12 +24,12 @@ process.on('SIGINT', function() {
     process.exit(1);
 });
 
-if (process.argv.length < 3) {
+if (argv.length < 3) {
   svr = server({});
   return;
 }
 
-fs.readFile(process.argv[2], "utf-8", function (err, data) {
+fs.readFile(argv[2], "utf-8", function (err, data) {
   if (err) {
     throw err;
   }
