@@ -1,4 +1,4 @@
-var Server = require('./lib/main');
+var main = require('./lib/main');
 var server;
 
 process.on('uncaughtException', function(err) {
@@ -16,7 +16,7 @@ module.exports.start = function(options) {
     throw new Error("already running");
   }
   
-    server = new Server(options);
+    server = main.start(options);
 };
 
 module.exports.stop = function() {
