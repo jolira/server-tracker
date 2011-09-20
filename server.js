@@ -2,7 +2,7 @@ var main = require('./lib/main');
 var server;
 
 process.on('uncaughtException', function(err) {
-  console.error(err);
+  console.log(err);
 });
 
 process.on('SIGINT', function() {
