@@ -6,11 +6,11 @@
   "author": "Joachim Kainz <info@jolira.com>",
   "contributors": [
     { "name": "Joachim Kainz", "email": "info@jolira.com" },
-    { "name": "Joe Hudson", "email": "info@jolira.com" }
+    { "name": "Gabe Hopper", "email": "info@jolira.com" }
   ],
   "keywords": ["monitoring", "enterprise"],
-  "repository": "git://github.com/jolira/server-tracker",
-  "main": "index",
+  "repository": "git://github.com/jolira/server-tracker.git",
+  "main": "server",
   "bin": { "server-tracker": "./bin/server-tracker" },
   "scripts": {
     "test": "make test",
