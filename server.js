@@ -1,3 +1,4 @@
+var fs = require('fs');
 var main = require('./lib/main');
 var server;
 
@@ -11,15 +12,15 @@ process.on('SIGINT', function() {
     process.exit(1);
 });
 
-module.exports.start = function(options) {
+function start(options) {
   if (server) {
     throw new Error("already running");
   }
-  
+
     server = main.start(options);
 };
 
-module.exports.stop = function() {
+function stop() {
   if (!server) {
     throw new Error("not urnning");
   }
@@ -27,3 +28,29 @@ module.exports.stop = function() {
     server.stop();
     server = null;
 };
+
+var argv = process.argv;
+
+for (var idx = 2; idx < argv.length; idx++) {
+  var arg = argv[idx];
+  if (arg === "--profile") {
+    require("v8-profiler");
+    argv.splice(idx, 1);
+  }
+}
+
+process.title = "server-tracker";
+
+if (argv.length < 3) {
+  start({});
+}
+else {
+  fs.readFile(argv[2], "utf-8", function(err, data) {
+    if (err) {
+      throw err;
+    }
+    var options = JSON.parse(data);
+
+    start(options);
+  });
+}

@@ -10,7 +10,7 @@
   ],
   "keywords": ["monitoring", "enterprise"],
   "repository": "git://github.com/jolira/server-tracker.git",
-  "main": "index",
+  "main": "server",
   "bin": { "server-tracker": "./bin/server-tracker" },
   "scripts": {
     "test": "make test",
