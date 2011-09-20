@@ -1,64 +1,29 @@
-var jmxScrapper = require('./lib/jmx-scrapper');
-var MetricServer = require('./lib/metric-server');
-var QueryServer = require('./lib/query-server');
-var configuration = require('./lib/config');
 var Server = require('./lib/server');
-var openDB = require('./lib/db');
+var server;
 
-function startServices(server, db, config) {
-  var services = {
-    metricServer : new MetricServer(db),
-    queryServer : new QueryServer(db, config),
-  };
+process.on('uncaughtException', function(err) {
+  console.error(err);
+});
 
-  if (!config.properties.jmx) {
-    config.properties.jmx = {};
+process.on('SIGINT', function() {
+    console.log('Shutting down...');
+    server.stop();
+    process.exit(1);
+});
+
+module.exports.start = function(options) {
+  if (server) {
+    throw new Error("already running");
   }
-
-  services.jmx = jmxScrapper.start(db, config);
-
-  // Routes
-  server.post('/submit/metric', function(req, res) {
-    services.metricServer.postMetric(req, res);
-  });
-  server.post('/query', function(req, res) {
-    services.queryServer.postQuery(req, res);
-  });
-
-  return services;
-}
-
-function stopServices(services) {
-  jmxScrapper.stop(services);
-}
-
-function ServerTracker(options) {
-  var listenPort = options.listenPort ? options.listenPort : 3080;
-
-  this.server = new Server();
-  this.server.listen(listenPort);
-}
-
-ServerTracker.prototype.stop = function() {
-  this.server.stop();
-  stopServices(this.services);
+  
+    server = new Server(options);
 };
 
-module.exports = function(options) {
-  var server = new ServerTracker(options);
-  var mongo = options.mongo ? options.mongo : {};
+module.exports.stop = function() {
+  if (!server) {
+    throw new Error("not urnning");
+  }
 
-  openDB(mongo, function(db) {
-    configuration(db, function(config) {
-      server.services = startServices(server.server, db, config);
-
-      config.on('change', function(config) {
-        stopServices(server.services);
-
-        server.services = startServices(server.server, db, config);
-      });
-    });
-  });
-
-  return server;
+    server.stop();
+    server = null;
 };

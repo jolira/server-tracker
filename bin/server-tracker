@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
-var server = require("./server");
+var server = require("../server");
 var svr;
 
 var argv = process.argv;
@@ -18,18 +18,8 @@ for (var idx=2; idx<argv.length; idx++) {
 console.info("node version %s", process.version);
 process.title = "server-tracker";
 
-process.on('uncaughtException', function(err) {
-  console.error(err);
-});
-
-process.on('SIGINT', function() {
-    console.log('Shutting down...');
-    svr.stop();
-    process.exit(1);
-});
-
 if (argv.length < 3) {
-  svr = server({});
+  start({});
   return;
 }
 
@@ -40,5 +30,5 @@ fs.readFile(argv[2], "utf-8", function (err, data) {
 
   var options = JSON.parse(data);
 
-  svr = server(options);
+  start(options);
 });
