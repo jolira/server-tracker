@@ -18,11 +18,14 @@
   },
   "engines": { "node": ">= 0.4.9" },
   "dependencies": {
-    "express": ">= 2.4.2",
+    "express": ">= 2.4.6",
     "jqtpl": ">= 1.0.6",
-    "connect": ">= 1.6.0",
+    "connect": ">= 1.7.1",
     "underscore": ">= 1.1.7",
     "mongodb": ">= 0.9.6-9",
     "jolokia-client": ">= 0.0.7"
+  },
+  "devDependencies": {
+    "v8-profiler" : "0.0.3"
   }
 }
