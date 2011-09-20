@@ -1,4 +1,4 @@
-var Server = require('./lib/server');
+var Server = require('./lib/main');
 var server;
 
 process.on('uncaughtException', function(err) {
