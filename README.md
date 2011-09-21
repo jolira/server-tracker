@@ -60,4 +60,4 @@ The ``myconf.json`` file has to contain valid json that identifies the replicati
 Submitting Data
 ----------------
 
-Once the server is running
+Once the server is running, data can be submitted using ``/submit/events``. 
