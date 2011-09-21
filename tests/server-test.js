@@ -1,1 +1,1 @@
-var connect = require("../index");
+var connect = require("../server");
