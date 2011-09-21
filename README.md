@@ -60,4 +60,14 @@ The ``myconf.json`` file has to contain valid json that identifies the replicati
 Submitting Data
 ----------------
 
-Once the server is running, data can be submitted using ``/submit/events``. 
+Once the server is running, data can be submitted using ``/submit/events``. If the server runs on localhsot, the data can be submitted using ``http://localhost:3080/submit/events`` as the url.
+
+
+The data has to be posted to this url. The content of the post should contain both "events" and log messages, as in:
+
+```
+{
+  "events" : [ event1, event2, event3, ... ],
+  "logs" : [ logRecord1, logRecord2, logRecord3, ... ]
+}
+```
