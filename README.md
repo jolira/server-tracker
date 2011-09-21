@@ -76,8 +76,23 @@ The data has to be posted to this url. The content of the post should contain bo
 
 All properties are option, but at least the ``events`` or the ``logs`` field should be set, otherwise no action is taken.
 
+### ``timeestamp``
+
 The ``timeestamp`` can be set on the server to indicate when the server submitted the event. If provided, it will be stored with every event as the ``submitTimestamp`` property. The same is true for logs. If the ``timetstamp`` is set this timestamp will be added as the ``submitTimestamp`` to every log record that was submitted.
 
-The ``source`` property is a convenient way to identify the source of the event without having to explicityly set it for every event. If the source property is
-available it is added to every event that was submitted, but does not have a source property. The source should identify the source of the event (such as the hostname of the server or device that created the event object).
+### ``source``
 
+The ``source`` property is a convenient way to identify the source of the event without having to explicityly set it for every event. If the source property is
+available it is added to every event that was submitted, but does not have a source property. The source should identify the source of the event (such as the hostname of the server or device that created the event object). The  ``source`` property is used the same way with all entries in ``logs``. If present,  it will be added as the value of the ``source`` property for every log record that does not have one.
+
+### ``events``
+
+The ``events`` identifies the array of events that should be added to the database. 
+
+### ``logs``
+
+Events
+----------------
+
+Logs
+----------------
