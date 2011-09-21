@@ -87,12 +87,20 @@ available it is added to every event that was submitted, but does not have a sou
 
 ### ``events``
 
-The ``events`` identifies the array of events that should be added to the database. 
+The ``events`` property the array of events that should be added to the database. Every event should have the following structure:
+
+```
+{
+  "type" : <>
+  "timetamp" : <time the event started ("unix time")>,
+  "duration" : <the duration of the event>,
+  "visitor" : <>,
+  "session" : <>
+  "source" : <self identification of the server>,
+  "metrics" : [ <metric1>, <metric2>, <metric3>, ... ]
+}
+```
+
 
 ### ``logs``
 
-Events
-----------------
-
-Logs
-----------------
