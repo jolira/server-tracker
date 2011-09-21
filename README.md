@@ -8,13 +8,13 @@ The idea of this tool is to collect metrics as well as logs from a large number 
 Main features are:
 
 * Collection of "events", "metrics", and log records and storing them in MongoDB.
-* Retrieving JMX data from java servers using the [jolokia]{http://www.jolokia.org/} JXM bridge
+* Retrieving JMX data from java servers using the [jolokia](http://www.jolokia.org/) JXM bridge
 * Rendering arbitrary wonderful graphs that tracks customer behavior, server performance, response times, etc.
 
 Install & Run
 ----------------
 
-In order to be able to install and execute the server-tracker, one must have both ``node.js`` and ``npm`` installed. There are many ways to get these two products install. One of them is to install them using [nvm]{https://github.com/creationix/nvm}:
+In order to be able to install and execute the server-tracker, one must have both ``node.js`` and ``npm`` installed. There are many ways to get these two products install. One of them is to install them using [nvm](https://github.com/creationix/nvm):
 
 ```
 git clone git://github.com/creationix/nvm.git ~/.nvm
