@@ -18,7 +18,7 @@ function start(options) {
   }
 
     server = main.start(options);
-};
+}
 
 function stop() {
   if (!server) {
@@ -27,7 +27,7 @@ function stop() {
 
     server.stop();
     server = null;
-};
+}
 
 var argv = process.argv;
 

@@ -23,7 +23,7 @@ nvm install v0.4.12
 nvm alias default v0.4.12
 ```
 
-In order for this to work one obviously need ``git`` as well as a compiler and other build essentials.
+In order for this to work one obviously need ``git`` as well as a compiler and other build essentials. The [nvm](https://github.com/creationix/nvm) github page is one of the sources that explain how to install these problems.
 
 Once ``node.js`` and ``npm`` are availabe, the tracker can be installed using:
 
@@ -32,5 +32,32 @@ npm install server-tracker --mongodb:native
 npm install server-tracker
 ```
 
+The startup process fails miserably unless the tracker can connect to a mongo instance on the local server. Configuration data is loaded from there. In order to connect to a different instance, one has to start the server tracker directly using:
+
+```
+node_modules/server-tracker/bin/server-tracker myconf.json
+```
+
+The ``myconf.json`` file has to contain valid json that identifies the replication set to use, as in:
+
+```
+{
+  "mongo" : {
+    "replica-set" : [{
+      "server" : "mongo1.jolira.com",
+      "port" : 27017
+    }, {
+      "server" : "mongo2.jolira.com",
+      "port" : 27017
+    }, {
+      "server" : "mongo3.jolira.com",
+      "port" : 27017
+    }]
+  }
+}
+```
+
 Submitting Data
 ----------------
+
+Once the server is running
