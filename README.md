@@ -67,7 +67,11 @@ The data has to be posted to this url. The content of the post should contain bo
 
 ```
 {
-  "events" : [ event1, event2, event3, ... ],
-  "logs" : [ logRecord1, logRecord2, logRecord3, ... ]
+  "timetamp" : <time on server>,
+  "source" : <self identification of the server>,
+  "events" : [ <event1>, <event2>, <event3>, ... ],
+  "logs" : [ <logRecord1>, <logRecord2>, <logRecord3>, ... ]
 }
 ```
+
+All properties are option, but at least the ``events`` or the ``logs`` field should be set, otherwise no action is taken. The ``timetstamp`` can be set on the server to indicate when the server submitted the event. If provided, it will be stored with every event as the ``submitTimestamp`` property.
