@@ -2,7 +2,7 @@
   "name": "server-tracker",
   "description": "track performance, and other information from servers, write the data into mongodb, and hand it out to clients for visualization",
   "url" : "http://github.com/jolia/server-tracker",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Joachim Kainz <info@jolira.com>",
   "contributors": [
     { "name": "Joachim Kainz", "email": "info@jolira.com" },
@@ -23,6 +23,7 @@
     "connect": ">= 1.7.1",
     "underscore": ">= 1.1.7",
     "mongodb": ">= 0.9.6-9",
+    "backgrounder": ">= 0.0.1",
     "jolokia-client": ">= 0.0.7"
   },
   "devDependencies": {
