@@ -29,7 +29,6 @@ Once ``node.js`` and ``npm`` are availabe, the tracker can be installed using:
 
 ```
 npm install server-tracker --mongodb:native
-npm install server-tracker
 ```
 
 The startup process fails miserably unless the tracker can connect to a mongo instance on the local server. Configuration data is loaded from there. In order to connect to a different instance, one has to start the server tracker directly using:
@@ -43,6 +42,7 @@ This file has to contain valid json that identifies the replication set to use, 
 
 ```
 {
+    "listenPort" : 3080,
     "mongo": {
         "replica-set": [
             {
