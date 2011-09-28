@@ -113,49 +113,8 @@ Client have to ``POST`` valid JSON containing arrays of event ``events`` and ``l
                                 "mode": "summary"
                             }
                         }
-                    },
-                    {
-                        "timestamp": 1316068488039561,
-                        "duration": 129,
-                        "url": {
-                            "protocol": "http",
-                            "host": "iphone.jolira.com",
-                            "port": "8081",
-                            "path": "/query/item",
-                            "params": {
-                                "product": 34294213,
-                                "mode": "details"
-                            }
-                        }
                     }
-                ],
-                "barcode-scan": {
-                    "action": "multiple",
-                    "barcode": "003452135"
-                },
-                "view-favorites": {}
-            }
-        },
-        {
-            "type": "shopping",
-            "timestamp": 1317249759123,
-            "duration": 2432,
-            "metrics": {
-                "exception": {
-                    "message": "socket error",
-                    "type": "NXSocketException",
-                    "stacktrace": [
-                        {
-                            "File": "Connector.m",
-                            "Line": 134
-                        },
-                        {
-                            "File": "Requestor.m",
-                            "Line": 332
-                        }
-                    ]
-                },
-                "view-voucher": {}
+                ]
             }
         }
     ],
