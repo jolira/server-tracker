@@ -35,25 +35,45 @@ npm install server-tracker
 The startup process fails miserably unless the tracker can connect to a mongo instance on the local server. Configuration data is loaded from there. In order to connect to a different instance, one has to start the server tracker directly using:
 
 ```
-node_modules/server-tracker/bin/server-tracker myconf.json
+npm start server-tracker
 ```
 
-The ``myconf.json`` file has to contain valid json that identifies the replication set to use, as in:
+By default, the tracker lookf for a configuration file called ``${HOME}/.server-tracker.json``.
+This file has to contain valid json that identifies the replication set to use, as in:
 
 ```
 {
-  "mongo" : {
-    "replica-set" : [{
-      "server" : "mongo1.jolira.com",
-      "port" : 27017
-    }, {
-      "server" : "mongo2.jolira.com",
-      "port" : 27017
-    }, {
-      "server" : "mongo3.jolira.com",
-      "port" : 27017
-    }]
-  }
+    "mongo": {
+        "replica-set": [
+            {
+                "server": "mongo00.jolira.com",
+                "port": 27017
+            },
+            {
+                "server": "mongo01.jolira.com",
+                "port": 27017
+            },
+            {
+                "server": "mongo02.jolira.com",
+                "port": 27017
+            }
+        ],
+        "database": "mobile-app"
+    },
+    "seeds": [
+            {
+                "server": "tracker00.jolira.com",
+                "port": 3080
+            },
+            {
+                "server": "tracker01.jolira.com",
+                "port": 3080
+            },
+            {
+                "server": "tracker02.jolira.com",
+                "port": 3080
+            }
+        ]
 }
 ```
 

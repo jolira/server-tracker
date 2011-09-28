@@ -41,16 +41,13 @@ for (var idx = 2; idx < argv.length; idx++) {
 
 process.title = "server-tracker";
 
-if (argv.length < 3) {
-  start({});
-}
-else {
-  fs.readFile(argv[2], "utf-8", function(err, data) {
-    if (err) {
-      throw err;
-    }
-    var options = JSON.parse(data);
+var configFile = argv.length > 2 ? argv[2] : process.env.HOME + "/.server-tracker.json";
 
-    start(options);
-  });
-}
+fs.readFile(configFile, "utf-8", function(err, data) {
+  if (err) {
+    throw err;
+  }
+  var options = JSON.parse(data);
+
+  start(options);
+});
