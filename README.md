@@ -1,5 +1,5 @@
 server-tracker
-================
+=======================================================================================================================
 
 Keeping track of servers is always a very important, but typically challenging task. There are many companies out there are glad to take your metrics and display it back for you, for a price.
 
@@ -12,7 +12,7 @@ Main features are:
 * Rendering arbitrary wonderful graphs that tracks customer behavior, server performance, response times, etc.
 
 Install & Run
-----------------
+-----------------------------------------------------------------------------------------------------------------------
 
 In order to be able to install and execute the server-tracker, one must have both ``node.js`` and ``npm`` installed. There are many ways to get these two products install. One of them is to install them using [nvm](https://github.com/creationix/nvm):
 
@@ -78,7 +78,96 @@ This file has to contain valid json that identifies the replication set to use, 
 ```
 
 Submitting Data
-----------------
+-----------------------------------------------------------------------------------------------------------------------
+
+For the impatient, source code that shows how to submit data to the server-tracker can be found in
+[examples/submitEvents](https://raw.github.com/jolira/server-tracker/master/examples/submitEvents).
+
+Client have to ``POST`` valid JSON containing arrays of event ``events`` and ``logs`` to ``/submit/events``. In addition
+``events`` and ``logs`` the posted structure should also contain any properties that should common to all ``events`` and
+``logs`. Here is an example:
+
+```
+{
+    "timestamp": 1317249723532,
+    "source": "shopping.jolira.com",
+    "visitor": "a815ee70-df67-11e0-9572-0800200c9a66",
+    "session": "aaebf7d5-c80f-4c04-a2b2-e0de618a364d",
+    "events": [
+        {
+            "type": "shopping",
+            "timestamp": 1317249721542,
+            "duration": 1200,
+            "metrics": {
+                "remotePerformance": [
+                    {
+                        "timestamp": 1316068487831981,
+                        "duration": 200,
+                        "url": {
+                            "protocol": "http",
+                            "host": "iphone.jolira.com",
+                            "port": "8081",
+                            "path": "/query/item",
+                            "params": {
+                                "product": 73212272,
+                                "mode": "summary"
+                            }
+                        }
+                    },
+                    {
+                        "timestamp": 1316068488039561,
+                        "duration": 129,
+                        "url": {
+                            "protocol": "http",
+                            "host": "iphone.jolira.com",
+                            "port": "8081",
+                            "path": "/query/item",
+                            "params": {
+                                "product": 34294213,
+                                "mode": "details"
+                            }
+                        }
+                    }
+                ],
+                "barcode-scan": {
+                    "action": "multiple",
+                    "barcode": "003452135"
+                },
+                "view-favorites": {}
+            }
+        },
+        {
+            "type": "shopping",
+            "timestamp": 1317249759123,
+            "duration": 2432,
+            "metrics": {
+                "exception": {
+                    "message": "socket error",
+                    "type": "NXSocketException",
+                    "stacktrace": [
+                        {
+                            "File": "Connector.m",
+                            "Line": 134
+                        },
+                        {
+                            "File": "Requestor.m",
+                            "Line": 332
+                        }
+                    ]
+                },
+                "view-voucher": {}
+            }
+        }
+    ],
+    "logs": [
+        {
+            "timestamp": 1317249793456,
+            "message": "socket error",
+            "level": "ERROR"
+        }
+    ]
+}
+```
 
 Once the server is running, data can be submitted using ``/submit/events``. If the server runs on localhsot, the data can be submitted using ``http://localhost:3080/submit/events`` as the url.
 
