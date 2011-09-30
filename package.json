@@ -2,7 +2,7 @@
   "name": "server-tracker",
   "description": "track performance, and other information from servers, write the data into mongodb, and hand it out to clients for visualization",
   "hompage": "http://jolira.github.com/server-tracker",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "Joachim Kainz <dev@jolira.com>",
   "contributors": [{
     "name": "Joachim Kainz",
