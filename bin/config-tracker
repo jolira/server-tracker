@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
-var configuration = require("../lib/config");
-var openDB = require('../lib/db');
 var util = require('util');
-console.info("node version %s", process.version);
+var configuration = require("../lib/config");
+
 process.title = "config-tracker";
 
 function read(file, callback) {
@@ -19,26 +18,31 @@ function read(file, callback) {
 
 function updateConfig(options, newConfigFile) {
   var mongo = options.mongo ? options.mongo : {};
-  openDB(mongo, function(db) {
-    configuration(db, function(config) {
-      if (newConfigFile) {
-        read(newConfigFile, function(props) {
-          config.save(props);
+
+  configuration.load(options, function(props) {
+    if (newConfigFile) {
+      read(newConfigFile, function(props) {
+        configuration.save(props, function(doc) {
+          console.log(util.inspect(props, false, 100));
           process.exit(0);
         });
-      }
-      else {
-        console.log("existing=%s", util.inspect(config.properties, false, 100));
-        process.exit(0);
-      }
-    });
+      });
+    }
+    else {
+      console.log(util.inspect(props, false, 100));
+      process.exit(0);
+    }
   });
 }
 if (process.argv.length < 3) {
-  updateConfig({});
+  configuration.bootstrap(function(options){
+    updateConfig(options);
+  });
 }
 else if (process.argv.length < 4) {
-  updateConfig({}, process.argv[2]);
+  configuration.bootstrap(function(options){
+    updateConfig(options, process.argv[2]);
+  });
 }
 else {
   read(process.argv[2], function(properties) {

@@ -1,5 +1,5 @@
-var fs = require('fs');
 var main = require('./lib/main');
+var config = require('./lib/config');
 var server;
 
 process.on('uncaughtException', function(err) {
@@ -41,13 +41,6 @@ for (var idx = 2; idx < argv.length; idx++) {
 
 process.title = "server-tracker";
 
-var configFile = argv.length > 2 ? argv[2] : process.env.HOME + "/.server-tracker.json";
-
-fs.readFile(configFile, "utf-8", function(err, data) {
-  if (err) {
-    throw err;
-  }
-  var options = JSON.parse(data);
-
+config.bootstrap(function(options){
   start(options);
 });
