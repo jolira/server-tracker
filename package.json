@@ -22,7 +22,7 @@
     "node": ">= 0.4.9"
   },
   "dependencies": {
-    "backgrounder": ">= 0.2.0",
+    "backgrounder": ">= 0.2.2",
     "express": ">= 2.4.6",
     "jqtpl": ">= 1.0.6",
     "connect": ">= 1.7.1",
