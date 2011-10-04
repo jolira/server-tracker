@@ -5,6 +5,7 @@ var http = require('http');
 
 function postEvent(options) {
   var payload = {
+    "timestamp": Date.now(),
     "events": [{
       "type": "shopping",
       "timestamp": Date.now(),
