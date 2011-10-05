@@ -14,23 +14,32 @@ var options = {
   }
 };
 
-var date = new Date();
-var now = date.getTime();
+var now = Date.now();
 
 var payload = {
-  "start":now - 15 * 60 * 1000,
+  "start":now - 24 * 60 * 60 * 1000,
   "end" : now,
   "count" : 20,
-  "collections" : {
-    "jmx" : {
-      "HeapMemoryUsage used" : {
-        "timestamp" : "response.timestamp",
-        "field" : "response.value.HeapMemoryUsage.used",
-        "qualifiers" : {},
-        "operation" : "AVG"
-      }
-    }, 
+  "quaifier" : {
+    "type" : "measurement-loader"
   },
+  "series" : {
+    "Inserting Measurements (Avarage)" : {
+      "field" : "duration",
+      "qualifier" : {},
+      "operation" : "AVG"
+    },
+    "Inserting Measurements (Maximum)" : {
+      "field" : "duration",
+      "qualifier" : {},
+      "operation" : "MAX"
+    },
+    "Inserting Measurements (Minimum)" : {
+      "field" : "duration",
+      "qualifier" : {},
+      "operation" : "MIN"
+    }
+  }
 };
 
 var req = http.request(options, function(res) {
