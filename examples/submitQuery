@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 var http = require('http');
-var server = process.argv.length > 2 ? process.argv [2] : "localhost";
-
+var server = process.argv.length > 2 ? process.argv[2] : "localhost";
 var options = {
   host: server,
   port: 3080,
@@ -13,48 +12,43 @@ var options = {
     "Content-Type": "application/json"
   }
 };
-
 var now = Date.now();
-
 var payload = {
-  "start":now - 24 * 60 * 60 * 1000,
-  "end" : now,
-  "count" : 20,
-  "qualifier" : {
-    "type" : "measurement-loader"
+  "start": now - 24 * 60 * 60 * 1000,
+  "end": now,
+  "count": 20,
+  "qualifier": {
+    "type": "measurement-loader"
   },
-  "series" : {
-    "Inserting Measurements (Avarage)" : {
-      "field" : "duration",
-      "qualifier" : {},
-      "operation" : "AVG"
+  "series": {
+    "Inserting Measurements (Avarage)": {
+      "field": "duration",
+      "qualifier": {},
+      "operation": "AVG"
     },
-    "Inserting Measurements (Maximum)" : {
-      "field" : "duration",
-      "qualifier" : {},
-      "operation" : "MAX"
+    "Inserting Measurements (Maximum)": {
+      "field": "duration",
+      "qualifier": {},
+      "operation": "MAX"
     },
-    "Inserting Measurements (Minimum)" : {
-      "field" : "duration",
-      "qualifier" : {},
-      "operation" : "MIN"
+    "Inserting Measurements (Minimum)": {
+      "field": "duration",
+      "qualifier": {},
+      "operation": "MIN"
     }
   }
 };
-
 var req = http.request(options, function(res) {
   console.log('STATUS: ' + res.statusCode);
   console.log('HEADERS: ' + JSON.stringify(res.headers));
   res.setEncoding('utf8');
-  res.on('data', function (chunk) {
+  res.on('data', function(chunk) {
     console.log('BODY: ' + chunk);
   });
 });
-
 req.on('error', function(e) {
   console.log('problem with request: ' + e.message);
 });
-
 // write data to request body
 req.write(JSON.stringify(payload));
 req.end();

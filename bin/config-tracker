@@ -3,7 +3,6 @@
 var fs = require('fs');
 var util = require('util');
 var configuration = require("../lib/config");
-
 process.title = "config-tracker";
 
 function read(file, callback) {
@@ -18,7 +17,6 @@ function read(file, callback) {
 
 function updateConfig(options, newConfigFile) {
   var mongo = options.mongo ? options.mongo : {};
-
   configuration.load(options, function(props) {
     if (newConfigFile) {
       read(newConfigFile, function(props) {
@@ -35,12 +33,12 @@ function updateConfig(options, newConfigFile) {
   });
 }
 if (process.argv.length < 3) {
-  configuration.bootstrap(function(options){
+  configuration.bootstrap(function(options) {
     updateConfig(options);
   });
 }
 else if (process.argv.length < 4) {
-  configuration.bootstrap(function(options){
+  configuration.bootstrap(function(options) {
     updateConfig(options, process.argv[2]);
   });
 }

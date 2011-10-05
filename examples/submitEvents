@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 var hostname = require('os').hostname();
 var http = require('http');
 
@@ -91,7 +90,6 @@ function postEvent(options) {
   req.write(JSON.stringify(payload));
   req.end();
 }
-
 var options = {
   host: 'localhost',
   port: 3080,
@@ -102,9 +100,7 @@ var options = {
     "Content-Type": "application/json"
   }
 };
-
 var count = process.argv.length > 2 ? parseInt(process.argv[2]) : 1;
-
-for(var idx=0; idx<count; idx++) {
+for (var idx = 0; idx < count; idx++) {
   postEvent(options);
 }
