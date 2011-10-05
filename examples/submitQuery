@@ -21,17 +21,17 @@ var payload = {
     "type": "query-server"
   },
   "series": {
-    "Inserting Measurements (Avarage)": {
+    "Avarage Query time": {
       "field": "duration",
       "qualifier": {},
       "operation": "AVG"
     },
-    "Inserting Measurements (Maximum)": {
+    "Maximum Query time": {
       "field": "duration",
       "qualifier": {},
       "operation": "MAX"
     },
-    "Inserting Measurements (Minimum)": {
+    "Minimum Query time": {
       "field": "duration",
       "qualifier": {},
       "operation": "MIN"
