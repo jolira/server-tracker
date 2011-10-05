@@ -20,7 +20,7 @@ var payload = {
   "start":now - 24 * 60 * 60 * 1000,
   "end" : now,
   "count" : 20,
-  "quaifier" : {
+  "qualifier" : {
     "type" : "measurement-loader"
   },
   "series" : {
