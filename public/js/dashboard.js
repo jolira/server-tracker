@@ -215,7 +215,7 @@
       type : 'POST',
       url : "/query",
       data : {
-        type : "dashboards"
+        "type" : "dashboards"
       },
       success : function(config) {
         setup(config);
