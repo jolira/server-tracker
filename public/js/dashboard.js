@@ -215,10 +215,10 @@
       type : 'POST',
       url : "/query",
       data : {
-        "type" : "dashboards"
+        "type" : "config"
       },
       success : function(config) {
-        setup(config);
+        setup(config.dashboards);
       },
       error : function(xhr) {
         $("#graphs").text(xhr.responseText);
