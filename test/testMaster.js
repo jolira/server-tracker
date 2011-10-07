@@ -5,7 +5,7 @@ var masters = [];
 
 function startMaster(port) {
   var svr = new Server();
-  master.start('/master', ["localhost:4000", "localhost:4001", "localhost:4002"], "localhost:" + port, function(server) {
+  master.start('/master', [{"server":"localhost", "port":4000}, {"server":"localhost", "port":4025}], "localhost:" + port, function(server) {
     masters.push(server);
     svr.post('/master', function(req, res) {
       server.postStatus(req, res);
