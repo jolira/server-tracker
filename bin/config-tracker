@@ -21,13 +21,13 @@ function updateConfig(options, newConfigFile) {
     if (newConfigFile) {
       read(newConfigFile, function(props) {
         configuration.save(props, function(doc) {
-          console.log(util.inspect(props, false, 100));
+          console.log("%j", props);
           process.exit(0);
         });
       });
     }
     else {
-      console.log(util.inspect(props, false, 100));
+      console.log("%j", props);
       process.exit(0);
     }
   });
