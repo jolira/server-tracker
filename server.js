@@ -1,4 +1,4 @@
-var main = require('./lib/main');
+var launcher = require('./lib/launcher');
 var config = require('./lib/config');
 var server;
 
@@ -17,7 +17,7 @@ function start(options) {
     throw new Error("already running");
   }
 
-    server = main.start(options);
+    server = launcher.start(options);
 }
 
 function stop() {
