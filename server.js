@@ -17,6 +17,17 @@ function start(options) {
     throw new Error("already running");
   }
 
+  var argv = process.argv;
+
+  for (var idx = 2; idx < argv.length; idx++) {
+    var arg = argv[idx];
+    if (arg === "--profile") {
+      require("v8-profiler");
+    }
+    if (arg === "--query-only") {
+      options["query-only"] = true;
+    }
+}
     server = launcher.start(options);
 }
 
@@ -27,16 +38,6 @@ function stop() {
 
     server.stop();
     server = null;
-}
-
-var argv = process.argv;
-
-for (var idx = 2; idx < argv.length; idx++) {
-  var arg = argv[idx];
-  if (arg === "--profile") {
-    require("v8-profiler");
-    argv.splice(idx, 1);
-  }
 }
 
 process.title = "server-tracker";
