@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+
+var _ = require('underscore');
+var config = require('../lib/config');
+var http = require('http');
+var url = require('url');
+
+function start(config) {
+    var server = "localhost";
+    var port = config.dispatcher.listenPorts[0];
+    var options = {
+        host: server,
+        port: 3080,
+        path: '/query',
+        method: 'POST',
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        }
+    };
+    var now = Date.now();
+    var payload = {
+      "type" : "query",
+      "start": now - 15 * 60 * 1000,
+      "end": now,
+      "count": 30,
+      "qualifier": {
+        "type": "jmx",
+        "mbean" : "java.lang:type=Threading"
+      },
+      "series" : {}
+    };
+    var jmx = config.jmx;
+    _.each(jmx, function(entry){
+        if (_.indexOf(entry.mbeans, "java.lang:type=Threading") != -1) {
+          _.each(entry.targets, function(target){
+              var parsed = url.parse(target, true);
+              var host = parsed.host.replace(/\./g, '_');
+              payload.series[host] = {
+                "field": "value.ThreadCount",
+                "qualifier": {
+                    "url.host" : parsed.host
+                },
+                "operation": "MAX"
+              };
+          });
+        }
+    });
+    var req = http.request(options, function(res) {
+      console.log('STATUS: ' + res.statusCode);
+      console.log('HEADERS: ' + JSON.stringify(res.headers));
+      res.setEncoding('utf8');
+      res.on('data', function(chunk) {
+        console.log('BODY: ' + chunk);
+      });
+      res.on('end', function(chunk) {
+        process.nextTick(function(){
+          process.exit(0);
+        });
+      });
+    });
+    req.on('error', function(e) {
+      console.log('problem with request: ' + e.message);
+    });
+    // write data to request body
+    req.write(JSON.stringify(payload));
+    req.end();
+}
+
+config.bootstrap(function(options){
+  config.load(options, function(options) {
+    start(options);
+  });
+});

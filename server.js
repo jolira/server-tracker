@@ -24,11 +24,8 @@ function start(options) {
     if (arg === "--profile") {
       require("v8-profiler");
     }
-    if (arg === "--query-only") {
-      options["query-only"] = true;
-    }
-}
-    server = launcher.start(options);
+  }
+  server = launcher.start(options);
 }
 
 function stop() {
