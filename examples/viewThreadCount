@@ -50,10 +50,12 @@ function start(config) {
       console.log('STATUS: ' + res.statusCode);
       console.log('HEADERS: ' + JSON.stringify(res.headers));
       res.setEncoding('utf8');
+      var result = "";
       res.on('data', function(chunk) {
-        console.log('BODY: ' + chunk);
+        result += chunk;
       });
-      res.on('end', function(chunk) {
+      res.on('end', function() {
+        console.log(JSON.parse(result));
         process.nextTick(function(){
           process.exit(0);
         });
