@@ -81,13 +81,6 @@
     return undefined;
   }
 
-  function externalizeRange() {
-    return {
-      from : convert2date(range.from),
-      until : convert2date(range.until),
-    };
-  }
-
   function loadAvailableFields(graphID, graph, collection) {
     var metadata = metaCache[collection];
 
@@ -100,9 +93,9 @@
       type : 'POST',
       url : "/query",
       data : {
-        type : "metadata",
-        range : externalizeRange(),
-        collection : collection
+        "type" : "metadata",
+        "start": convert2date(range.from),
+        "end": convert2date(range.until),
       },
       success : function(metadata) {
         metaCache[collection] = metadata;
@@ -153,23 +146,44 @@
     addMetric(graphID, graph);
   }
 
-  function loadGraphs(graphID, graphConfig) {
-    var _count = $("#dataPointCount").val();
-    var count = parseInt(_count);
-    var range = externalizeRange();
+  function renderGraph(graphID, result) {
+    var series = [];
+    for(var name in result) {
+      var data = result[name];
+      series.push({
+        "name" : name,
+        "data" : data
+      });
+    }
+    charts[graphID] = new Highcharts.Chart({
+        "chart": {
+            "renderTo": "container"
+        },
+        "series" : series
+    });
+  }
+
+  function loadGraphs(graphID, gcfg) {
+    var count = $("#dataPointCount").val();
+    var payload = {
+        "type" : "query",
+        "start": convert2date(range.from),
+        "end": convert2date(range.until),
+        "count": count,
+        "qualifier": gcfg.qualifier,
+        "series" : gcfg.series
+    };
 
     $.ajax({
       type : 'POST',
       url : "/query",
-      data : {
-        data : graphConfig.data,
-        range : range,
-        count : count
-      },
-      success : function(data) {
-        console.log(data);
+      dataType: 'json',
+      data : payload,
+      success : function(result) {
+        renderGraph(graphID, result);
       },
       error : function(xhr) {
+        // TODO: better error handling
         console.log(xhr.responseText);
       }
     });
@@ -187,22 +201,21 @@
 
     graphs.empty();
 
-    charts = [];
+    charts = {};
 
     // TODO: Handle non-default dashboards
-    var graphsConfig = config["default"].graphs;
+    var gcfgs = config["default"].graphs;
 
-    for ( var idx in graphsConfig) {
+    for ( var idx in gcfgs) {
       var graphID = "graph" + idx;
-      var graphConfig = graphsConfig[idx];
+      var gcfg = gcfgs[idx];
       var graphDiv = $('<div/>', {
         "id" : graphID,
-        "style" : "100%",
-        "height" : "400px"
+        "style" : gcfg.style || "width: 100%; height: 400px"
       });
 
       graphs.append(graphDiv);
-      loadGraphs(graphID, graphConfig);
+      loadGraphs(graphID, gcfg);
     }
 
     // TODO: Add graphs here.
