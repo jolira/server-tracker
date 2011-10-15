@@ -5,6 +5,10 @@ var util = require('util');
 var configuration = require("../lib/config");
 process.title = "config-tracker";
 
+process.on('uncaughtException', function(err) {
+  console.log(err.stack);
+});
+
 function read(file, callback) {
   fs.readFile(process.argv[2], "utf-8", function(err, data) {
     if (err) {
