@@ -3,80 +3,68 @@ var opendb = require('../lib/db');
 
 function reducer(obj, result) {
     function count(buckets, bucketNo) {
-        var counts = buckets["count"];
-        if (!counts) {
-            counts = buckets["count"] = [];
+        if (!buckets.count) {
+            buckets.count = [];
         }
-        if (!counts[bucketNo]) {
-            counts[bucketNo] = 1;
+
+        if (!buckets.count[bucketNo]) {
+            buckets.count[bucketNo] = bucketNo;
         }
         else {
-            counts[bucketNo] ++;
+            buckets.count[bucketNo] ++;
         }
     }
 
     function average(buckets, bucketNo, value) {
-        var average = buckets["avg"];
-        if (!average) {
-            average = buckets["avg"] = [];
+        if (!buckets.avg) {
+            buckets.avg = [];
         }
-        if (!average[bucketNo]) {
-            average[bucketNo] = value;
+        if (!buckets.avg[bucketNo]) {
+            buckets.avg[bucketNo] = value;
         }
         else {
-            var counts = buckets["count"];
-            var count = counts[bucketNo];
+            var count = buckets.count[bucketNo];
             average[bucketNo] = (((count-1) * average[bucketNo]) + value) / count;
         }
     }
 
     function minimum(buckets, bucketNo, value) {
-        var mins = buckets["min"];
-        if (!mins) {
-            mins = buckets["min"] = [];
+        if (!buckets.min) {
+            buckets.min = [];
         }
-        if (!mins[bucketNo]) {
-            mins[bucketNo] = value;
+        if (!buckets.min[bucketNo]) {
+            buckets.min[bucketNo] = value;
         }
         else {
-            if (mins[bucketNo] > value) {
-                mins[bucketNo] = value;
+            if (buckets.min[bucketNo] > value) {
+                buckets.min[bucketNo] = value;
             }
         }
     }
 
     function maximum(buckets, bucketNo, value) {
-        var maxs = buckets["max"];
-        if (!maxs) {
-            maxs = buckets["max"] = [];
+        if (!buckets.max) {
+            buckets.max = [];
         }
-        if (!maxs[bucketNo]) {
-            maxs[bucketNo] = value;
+        if (!buckets.max[bucketNo]) {
+            buckets.max[bucketNo] = value;
         }
         else {
-            if (maxs[bucketNo] < value) {
-                maxs[bucketNo] = value;
+            if (buckets.max[bucketNo] < value) {
+                buckets.max[bucketNo] = value;
             }
         }
     }
 
-    var host = obj.url.host;
     var timestamp = obj.timestamp;
+    var bucketNo = Math.floor((timestamp - result.start) / result.bucketSize);
+
+    if (!result.stats["HeapMemoryUsage"]) {
+        result.stats["HeapMemoryUsage"] = {};
+    }
+
+    var buckets = result.stats["HeapMemoryUsage"];
     var value = obj.value.HeapMemoryUsage.used;
-
-    if (!result.stats[host]) {
-        result.stats[host] = {};
-    }
-
-    var hostBuckets = result.stats[host];
-
-    if (!hostBuckets["HeapMemoryUsage"]) {
-        hostBuckets["HeapMemoryUsage"] = {};
-    }
-
-    var buckets = hostBuckets["HeapMemoryUsage"];
-    var bucketNo = (timestamp - result.start) / result.bucketSize;
-    var bucket = buckets[bucketNo];
 
     count(buckets, bucketNo);
     average(buckets, bucketNo, value);
@@ -87,17 +75,19 @@ function reducer(obj, result) {
 function group(collection, callback) {
     var end = Date.now();
     var start = end - 15 * 60 * 1000;
-    var buckets = 15;
-    collection.group ({}, {timestamp: { "$gte" : start, "$lte" : end }, mbean : "java.lang:type=Memory"}, {
-        start : start,
-        end : end,
-        count : 0,
-        stats : {},
-        bucketSize : Math.floor((end - start) / buckets),
-
-    }, reducer, true, function(err, doc) {
-      console.log(require("util").inspect(doc, false, 100));
-      callback();
+    var buckets = 5;
+    collection.group ({"url.host":1},
+        {timestamp: { "$gte" : start, "$lte" : end }, mbean : "java.lang:type=Memory"}, {
+            start : start,
+            end : end,
+            stats : {},
+            bucketSize : Math.floor((end - start) / buckets),
+        },
+        reducer,
+        true,
+        function(err, doc) {
+          console.log(require("util").inspect(doc, false, 100));
+          callback();
     });
 }
 
