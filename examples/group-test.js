@@ -56,20 +56,44 @@ function reducer(obj, result) {
         }
     }
 
-    var timestamp = obj.timestamp;
-    var bucketNo = Math.floor((timestamp - result.start) / result.bucketSize);
+    function get(obj, accessor) {
+        accessor = accessor.split('.');
+        for(var idx in accessor) {
+            var segment = accessor[idx];
+            obj = obj[segment];
 
-    if (!result.stats["HeapMemoryUsage"]) {
-        result.stats["HeapMemoryUsage"] = {};
+            if (!obj) {
+                return undefined;
+            }
+        }
+        return obj;
     }
 
-    var buckets = result.stats["HeapMemoryUsage"];
-    var value = obj.value.HeapMemoryUsage.used;
+    function calculate(name, accessor, obj, bucketNo, result) {
+        var value = get(obj, accessor);
 
-    count(buckets, bucketNo);
-    average(buckets, bucketNo, value);
-    minimum(buckets, bucketNo, value);
-    maximum(buckets, bucketNo, value);
+        if (!value) {
+            return;
+        }
+
+        if (!result.stats[name]) {
+            result.stats[name] = {};
+        }
+
+        var buckets = result.stats[name];
+        count(buckets, bucketNo);
+        average(buckets, bucketNo, value);
+        minimum(buckets, bucketNo, value);
+        maximum(buckets, bucketNo, value);
+    }
+
+    var bucketNo = Math.floor((obj.timestamp - result.start) / result.bucketSize);
+
+    for(var key in result.keys) {
+        var accessor = result.keys[key];
+
+        calculate(key, accessor, obj, bucketNo, result);
+    }
 }
 
 function group(collection, callback) {
@@ -80,6 +104,7 @@ function group(collection, callback) {
         {timestamp: { "$gte" : start, "$lte" : end }, mbean : "java.lang:type=Memory"}, {
             start : start,
             end : end,
+            keys : { "heap used" : "value.HeapMemoryUsage.used" },
             stats : {},
             bucketSize : Math.floor((end - start) / buckets),
         },
