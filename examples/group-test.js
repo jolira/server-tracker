@@ -60,14 +60,21 @@ function reducer(obj, result) {
         }
     }
 
+    var host = obj.url.host;
     var timestamp = obj.timestamp;
     var value = obj.value.HeapMemoryUsage.used;
-    var buckets = result.stats["HeapMemoryUsage"];
 
-    if (!buckets) {
-        buckets = result.stats["HeapMemoryUsage"] = {};
+    if (!result.stats[host]) {
+        result.stats[host] = {};
     }
 
+    var hostBuckets = result.stats[host];
+
+    if (!hostBuckets["HeapMemoryUsage"]) {
+        hostBuckets["HeapMemoryUsage"] = {};
+    }
+
+    var buckets = hostBuckets["HeapMemoryUsage"];
     var bucketNo = (timestamp - result.start) / result.bucketSize;
     var bucket = buckets[bucketNo];
 
