@@ -16,9 +16,9 @@ function reducer(obj, result) {
     }
 
     function average(buckets, bucketNo, value) {
-        var average = buckets["average"];
+        var average = buckets["avg"];
         if (!average) {
-            average = buckets["average"] = [];
+            average = buckets["avg"] = [];
         }
         if (!average[bucketNo]) {
             average[bucketNo] = value;
@@ -27,6 +27,36 @@ function reducer(obj, result) {
             var counts = buckets["count"];
             var count = counts[bucketNo];
             average[bucketNo] = (((count-1) * average[bucketNo]) + value) / count;
+        }
+    }
+
+    function minimum(buckets, bucketNo, value) {
+        var mins = buckets["min"];
+        if (!mins) {
+            mins = buckets["min"] = [];
+        }
+        if (!mins[bucketNo]) {
+            mins[bucketNo] = value;
+        }
+        else {
+            if (mins[bucketNo] > value) {
+                mins[bucketNo] = value;
+            }
+        }
+    }
+
+    function maximum(buckets, bucketNo, value) {
+        var maxs = buckets["max"];
+        if (!maxs) {
+            maxs = buckets["max"] = [];
+        }
+        if (!maxs[bucketNo]) {
+            maxs[bucketNo] = value;
+        }
+        else {
+            if (maxs[bucketNo] < value) {
+                maxs[bucketNo] = value;
+            }
         }
     }
 
@@ -43,6 +73,8 @@ function reducer(obj, result) {
 
     count(buckets, bucketNo);
     average(buckets, bucketNo, value);
+    minimum(buckets, bucketNo, value);
+    maximum(buckets, bucketNo, value);
 }
 
 function group(collection, callback) {
