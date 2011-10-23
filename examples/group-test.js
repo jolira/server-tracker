@@ -8,7 +8,7 @@ function reducer(obj, result) {
         }
 
         if (!buckets.count[bucketNo]) {
-            buckets.count[bucketNo] = bucketNo;
+            buckets.count[bucketNo] = 1;
         }
         else {
             buckets.count[bucketNo] ++;
