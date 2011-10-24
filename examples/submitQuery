@@ -15,29 +15,13 @@ var options = {
 var now = Date.now();
 var payload = {
   "type" : "query",
-  "start": now - 24 * 60 * 60 * 1000,
+  "start": now - 60 * 60 * 1000,
   "end": now,
-  "count": 20,
-  "qualifier": {
-    "type": "query-server"
-  },
-  "series": {
-    "Avarage Query time": {
-      "field": "duration",
-      "qualifier": {},
-      "operation": "AVG"
-    },
-    "Maximum Query time": {
-      "field": "duration",
-      "qualifier": {},
-      "operation": "MAX"
-    },
-    "Minimum Query time": {
-      "field": "duration",
-      "qualifier": {},
-      "operation": "MIN"
-    }
-  }
+  "count": 30,
+  "collection" : "jmx",
+  "groupBy" : {"url.host":1},
+  "qualifier" : { "mbean" : "java.lang:type=Memory" },
+  "keys" : { "heap used" : "value.HeapMemoryUsage.used" }
 };
 var req = http.request(options, function(res) {
   console.log('STATUS: ' + res.statusCode);

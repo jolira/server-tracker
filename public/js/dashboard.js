@@ -3,8 +3,8 @@
   var metaCache = {};
   var config = undefined;
   var range = {
-    from : "1 hour ago",
-    until : "now"
+    start : "1 hour ago",
+    end : "now"
   };
 
   function getGraphs() {
@@ -94,8 +94,8 @@
       url : "/query",
       data : {
         "type" : "metadata",
-        "start": convert2date(range.from),
-        "end": convert2date(range.until),
+        "start": convert2date(range.start),
+        "end": convert2date(range.end),
       },
       success : function(metadata) {
         metaCache[collection] = metadata;
@@ -167,8 +167,8 @@
     var count = $("#dataPointCount").val();
     var payload = {
         "type" : "query",
-        "start": convert2date(range.from),
-        "end": convert2date(range.until),
+        "start": convert2date(range.start),
+        "end": convert2date(range.end),
         "count": count,
         "qualifier": gcfg.qualifier,
         "series" : gcfg.series
@@ -222,8 +222,8 @@
   }
 
   $(function() {
-    $("#from").val(range.from);
-    $("#until").val(range.until);
+    $("#start").val(range.start);
+    $("#end").val(range.end);
     $.ajax({
       type : 'POST',
       url : "/query",

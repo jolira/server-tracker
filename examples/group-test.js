@@ -98,12 +98,11 @@ function reducer(obj, result) {
 
 function group(collection, callback) {
     var end = Date.now();
-    var start = end - 15 * 60 * 1000;
-    var buckets = 5;
+    var start = end - 24 * 60 * 60 * 1000;
+    var buckets = 24;
     collection.group ({"url.host":1},
-        {timestamp: { "$gte" : start, "$lte" : end }, mbean : "java.lang:type=Memory"}, {
+        {timestamp: { "$gte" : start, "$lte" : end }, mbean : "java.lang:type=Memory" }, {
             start : start,
-            end : end,
             keys : { "heap used" : "value.HeapMemoryUsage.used" },
             stats : {},
             bucketSize : Math.floor((end - start) / buckets),
