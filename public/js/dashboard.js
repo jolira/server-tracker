@@ -90,15 +90,19 @@
   function renderGraph(graphID, gcfg, result) {
     var series = [];
     _.each(result, function(group) {
-      for(var labelKey in gcfg.render) {
-         var valueKey = gcfg.render[labelKey];
+      _.each(gcfg.render, function(valueKey, labelKey){
          var label = getValue(labelKey, group);
          var value = getValue("stats." + valueKey, group);
 
          if (value) {
-            series.push({ "name" : label || labelKey, "data" : value });
+            series.push({
+                "name" : label || labelKey,
+                "data" : value,
+                "pointStart" : group.start,
+                "pointInterval" : group.bucketSize
+            });
          }
-      }
+      });
     });
     charts[graphID] = new Highcharts.Chart({
         "chart": {
@@ -107,8 +111,13 @@
         "title" : {
             "text" : gcfg.title
         },
-        xAxis: {
-            type: 'datetime',
+        "xAxis" : {
+            "type": 'datetime',
+        },
+        "yAxis" : {
+            "title": {
+                "text" : ""
+            },
         },
         "series" : series
     });
@@ -162,6 +171,7 @@
   function loadDashboard(dashboard) {
     var graphs = $("#graphs");
 
+    //graphs.empty();
     charts = {};
 
     // TODO: Handle non-default dashboards
