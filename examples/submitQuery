@@ -20,8 +20,8 @@ var payload = {
   "count": 30,
   "collection" : "jmx",
   "groupBy" : {"url.host":1},
-  "qualifier" : { "mbean" : "java.lang:type=Memory" },
-  "keys" : { "heap used" : "value.HeapMemoryUsage.used" }
+  "qualifier" : { "mbean" : "java.lang:type=Threading" },
+  "keys" : { "count" : "value.ThreadCount" }
 };
 var req = http.request(options, function(res) {
   console.error('HEADERS: ' + JSON.stringify(res.headers));

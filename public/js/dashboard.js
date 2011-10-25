@@ -99,7 +99,7 @@
                 "name" : label || labelKey,
                 "data" : value,
                 "pointStart" : group.start,
-                "pointInterval" : group.bucketSize
+                "pointInterval" : group.interval
             });
          }
       });
@@ -190,6 +190,7 @@
       });
 
       graphs.append(graphDiv);
+      graphDiv.append("Loading...");
       loadGraphs(graphID, gcfg, function(query, callback) {
         var result = cache[query];
 
