@@ -7,20 +7,6 @@
     end : "now"
   };
 
-  function getGraphs() {
-    if (!config) {
-      throw new Error("config not loaded");
-    }
-
-    var graphs = config.graphs;
-
-    if (!graphs) {
-      graphs = config.graphs = [];
-    }
-
-    return graphs;
-  }
-
   function showMetrics(metadata) {
     alert(metadata);
   }
@@ -136,7 +122,7 @@
   function addGrapth() {
     $("#addGraph").hide();
 
-    var graphs = getGraphs();
+    var graphs = config.dashboards.graphs;
     var graph = {};
 
     graphs.push(graph);
@@ -146,14 +132,43 @@
     addMetric(graphID, graph);
   }
 
-  function renderGraph(graphID, result) {
+  function getValue(key, value) {
+    var val = value[key];
+
+    if (val) {
+        return val;
+    }
+
+    var index = key.indexOf('.');
+
+    if (index == -1) {
+       return undefined;
+    }
+
+    var _key = key.substr(0, index);
+
+    val = value[_key];
+
+    if (!val) {
+        return undefined;
+    }
+
+    return getValue(key.substr(index+1), val);
+  }
+
+  function renderGraph(graphID, gcfg, result) {
     var series = [];
-    for(var name in result) {
-      var data = result[name];
-      series.push({
-        "name" : name,
-        "data" : data
-      });
+    for(var idx in result) {
+      var group = result[idx];
+      for(var labelKey in gcfg.render) {
+         var valueKey = gcfg.render[labelKey];
+         var label = getValue(labelKey, group);
+         var value = getValue("stats." + valueKey, group);
+
+         if (value) {
+            series.push({ "name" : label || labelKey, "data" : value });
+         }
+      }
     }
     charts[graphID] = new Highcharts.Chart({
         "chart": {
@@ -163,40 +178,52 @@
     });
   }
 
-  function loadGraphs(graphID, gcfg) {
-    var count = $("#dataPointCount").val();
-    var payload = {
-        "type" : "query",
-        "start": convert2date(range.start),
-        "end": convert2date(range.end),
-        "count": count,
-        "qualifier": gcfg.qualifier,
-        "series" : gcfg.series
-    };
+  function loadGraphs(graphID, gcfg, loader) {
+    loader(gcfg.query, function(result) {
+      renderGraph(graphID, gcfg, result);
+    });
+  }
+
+  function getLoader(query, start, end, count) {
+    var result;
+    var callbacks = [];
 
     $.ajax({
       type : 'POST',
       url : "/query",
       dataType: 'json',
-      data : payload,
-      success : function(result) {
-        renderGraph(graphID, result);
+      data : {
+        "type" : "query",
+        "start": start,
+        "end": end,
+        "count": count,
+        "collection" : query.collection,
+        "groupBy" : query.groupBy || {},
+        "qualifier" : query.qualifier || {},
+        "keys" : query.keys || {}
+      },
+      success : function(_result) {
+        result = _result;
+        _.each(callbacks, function(callback) {
+          callback(_result);
+        });
       },
       error : function(xhr) {
         // TODO: better error handling
         console.log(xhr.responseText);
       }
     });
+
+    return function(callback) {
+        if (result) {
+            return callback(result);
+        }
+
+        callbacks.push(callback);
+    }
   }
 
-  function setup(loaded) {
-    config = loaded;
-
-    var addLink = $("#addGraph");
-
-    addLink.click(addGrapth);
-    addLink.show();
-
+  function loadDashboard(dashboard) {
     var graphs = $("#graphs");
 
     graphs.empty();
@@ -204,7 +231,11 @@
     charts = {};
 
     // TODO: Handle non-default dashboards
-    var gcfgs = config["default"].graphs;
+    var start = convert2date(range.start);
+    var end =  convert2date(range.end);
+    var count = $("#count").val();
+    var gcfgs = config.dashboards[dashboard].graphs;
+    var cache = {};
 
     for ( var idx in gcfgs) {
       var graphID = "graph" + idx;
@@ -215,9 +246,30 @@
       });
 
       graphs.append(graphDiv);
-      loadGraphs(graphID, gcfg);
-    }
+      loadGraphs(graphID, gcfg, function(query, callback) {
+        var result = cache[query];
 
+        if (result) {
+            return result(callback);
+        }
+
+        var _query = config.queries[query];
+        result = cache[query] = getLoader(_query, start, end, count);
+
+        return result(callback);
+      });
+    }
+  }
+
+  function setup(loaded) {
+    config = loaded;
+
+    var addLink = $("#addGraph");
+
+    addLink.click(addGrapth);
+    addLink.show();
+
+    loadDashboard("default");
     // TODO: Add graphs here.
   }
 
@@ -231,7 +283,7 @@
         "type" : "config"
       },
       success : function(config) {
-        setup(config.dashboards);
+        setup(config);
       },
       error : function(xhr) {
         $("#graphs").text(xhr.responseText);
