@@ -206,6 +206,7 @@
   }
 
   function setup(loaded) {
+    Highcharts.setOptions({ "global" : { "useUTC" : false } });
     config = loaded;
 
     loadDashboard("default");
