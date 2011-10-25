@@ -7,10 +7,6 @@
     end : "now"
   };
 
-  function showMetrics(metadata) {
-    alert(metadata);
-  }
-
   function convert2date(str) {
     var date = Date.parse(str);
 
@@ -67,71 +63,6 @@
     return undefined;
   }
 
-  function loadAvailableFields(graphID, graph, collection) {
-    var metadata = metaCache[collection];
-
-    if (metadata) {
-      showMetrics(graphID, graph, collection, metadata);
-      return;
-    }
-
-    $.ajax({
-      type : 'POST',
-      url : "/query",
-      data : {
-        "type" : "metadata",
-        "start": convert2date(range.start),
-        "end": convert2date(range.end),
-      },
-      success : function(metadata) {
-        metaCache[collection] = metadata;
-
-        showMetrics(graphID, graph, collection, metadata);
-      },
-      error : function(xhr) {
-        console.log(xhr.responseText);
-        // TODO: Better error handling
-      }
-    });
-  }
-
-  function addMetric(graphID, graph) {
-    var form = $('<form/>', {
-      id : 'metricSelector',
-    });
-    var select = $('<select/>', {
-      id : 'collection',
-      change : function() {
-        var self = $(this);
-        var collection = self.val();
-
-        loadAvailableFields(graphID, graph, collection);
-      }
-    });
-
-    $.each([ "select one", "jmx", "metric", "record" ], function(key, value) {
-      select.append($('<option/>', {
-        value : value,
-        text : value
-      }));
-    });
-    form.append(select);
-    form.insertAfter("#addGraph");
-  }
-
-  function addGrapth() {
-    $("#addGraph").hide();
-
-    var graphs = config.dashboards.graphs;
-    var graph = {};
-
-    graphs.push(graph);
-
-    graphID = graphs.length;
-
-    addMetric(graphID, graph);
-  }
-
   function getValue(key, value) {
     var val = value[key];
 
@@ -158,8 +89,7 @@
 
   function renderGraph(graphID, gcfg, result) {
     var series = [];
-    for(var idx in result) {
-      var group = result[idx];
+    _.each(result, function(group) {
       for(var labelKey in gcfg.render) {
          var valueKey = gcfg.render[labelKey];
          var label = getValue(labelKey, group);
@@ -169,10 +99,16 @@
             series.push({ "name" : label || labelKey, "data" : value });
          }
       }
-    }
+    });
     charts[graphID] = new Highcharts.Chart({
         "chart": {
-            "renderTo": "container"
+            "renderTo": graphID
+        },
+        "title" : {
+            "text" : gcfg.title
+        },
+        xAxis: {
+            type: 'datetime',
         },
         "series" : series
     });
@@ -226,8 +162,6 @@
   function loadDashboard(dashboard) {
     var graphs = $("#graphs");
 
-    graphs.empty();
-
     charts = {};
 
     // TODO: Handle non-default dashboards
@@ -237,7 +171,7 @@
     var gcfgs = config.dashboards[dashboard].graphs;
     var cache = {};
 
-    for ( var idx in gcfgs) {
+    _.each(gcfgs, function(gcfg, idx) {
       var graphID = "graph" + idx;
       var gcfg = gcfgs[idx];
       var graphDiv = $('<div/>', {
@@ -258,19 +192,13 @@
 
         return result(callback);
       });
-    }
+    });
   }
 
   function setup(loaded) {
     config = loaded;
 
-    var addLink = $("#addGraph");
-
-    addLink.click(addGrapth);
-    addLink.show();
-
     loadDashboard("default");
-    // TODO: Add graphs here.
   }
 
   $(function() {
