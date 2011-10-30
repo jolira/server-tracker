@@ -23,11 +23,11 @@
   },
   "dependencies": {
     "backgrounder": ">= 0.2.7",
-    "express": "2.4.7",
+    "express": "2.5.0",
     "jqtpl": "1.0.7",
-    "connect": "1.7.1",
-    "underscore": "1.2.0",
-    "mongodb": "0.9.6-22",
+    "connect": "1.7.2",
+    "underscore": "1.2.1",
+    "mongodb": "0.9.6-23",
     "jolokia-client": ">= 0.0.7"
   },
   "devDependencies": {
