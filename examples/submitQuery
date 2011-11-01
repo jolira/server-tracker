@@ -15,14 +15,15 @@ var options = {
 var now = Date.now();
 var payload = {
   "type" : "query",
-  "start": now - 60 * 60 * 1000,
+  "start": now - 15 * 60 * 1000,
   "end": now,
   "count": 30,
-  "collection" : "jmx",
-  "groupBy" : {"url.host":1},
-  "qualifier" : { "mbean" : "java.lang:type=Threading" },
-  "keys" : { "count" : "value.ThreadCount" }
+  "collection" : "timer",
+  "groupBy" : {"source":1},
+  "qualifier" : { "category" : "MOBILE_WEBSERVICE_BENCH" },
+  "keys" : { "duration" : "duration" }
 };
+console.log(payload);
 var req = http.request(options, function(res) {
   console.error('HEADERS: ' + JSON.stringify(res.headers));
   res.setEncoding('utf8');
