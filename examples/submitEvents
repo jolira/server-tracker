@@ -6,16 +6,14 @@ function postEvent(options) {
   var payload = {
     "timestamp": Date.now(),
     "events": [{
-      "type": "shopping",
+      "type": "example",
       "timestamp": Date.now(),
       "duration": 1200,
       "source": hostname,
       "visitor": "a815ee70-df67-11e0-9572-0800200c9a66",
       "session": "aaebf7d5-c80f-4c04-a2b2-e0de618a364d",
       "metrics": {
-        "remotePerformance": [{
-          "timestamp": 1316068487831,
-          "duration": 200,
+        "example": [{
           "url": {
             "protocol": "http",
             "host": "iphone.jolira.com",
@@ -26,53 +24,8 @@ function postEvent(options) {
               "mode": "summary"
             }
           }
-        }, {
-          "timestamp": 1316068488039,
-          "duration": 129,
-          "url": {
-            "protocol": "http",
-            "host": "iphone.jolira.com",
-            "port": "8081",
-            "path": "/query/item",
-            "params": {
-              "product": 34294213,
-              "mode": "details"
-            }
-          }
-        }],
-        "barcode-scan": {
-          "action": "multiple",
-          "barcode": "003452135"
-        },
-        "view-favorites": {}
+        }]
       }
-    }, {
-      "type": "shopping",
-      "timestamp": Date.now(),
-      "duration": 2432,
-      "source": hostname,
-      "visitor": "a815ee70-df67-11e0-9572-0800200c9a66",
-      "session": "aaebf7d5-c80f-4c04-a2b2-e0de618a364d",
-      "metrics": {
-        "exception": {
-          "message": "socket error",
-          "type": "NXSocketException",
-          "stacktrace": [{
-            "File": "Connector.m",
-            "Line": 134
-          }, {
-            "File": "Requestor.m",
-            "Line": 332
-          }]
-        },
-        "view-voucher": {}
-      }
-    }],
-    "logs": [{
-      "source": hostname,
-      "timestamp": Date.now(),
-      "message": "socket error",
-      "level": "ERROR"
     }]
   };
   var req = http.request(options, function(res) {
@@ -92,8 +45,8 @@ function postEvent(options) {
 }
 var options = {
   host: 'localhost',
-  port: 3080,
-  path: '/submit/events',
+  port: 8081,
+  path: '/x',
   method: 'POST',
   headers: {
     "Accept": "application/json",
