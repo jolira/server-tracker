@@ -12,11 +12,14 @@ function start(options) {
   emitter.emit("config", {
     entry : {
       collection : "jmx",
-      result : "jmx-stats"
+      interval : 60000,
+      out : "jmx-stats",
+      groupBy: { "url.host" : 1 },
+      keys: { "heap used" : "value.HeapMemoryUsage.used" }
     },
     mongo : options.mongo
   }, function() {
-    emitter.emit("message", function(){
+    emitter.emit("message", {}, function(){
       console.log("reduced");
     });
   });
