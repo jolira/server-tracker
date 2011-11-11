@@ -1,3 +1,5 @@
+// db.jmx.update({"_mapReduced":"done"}, {"$unset":{_mapReduced:1}}, false, true)
+
 var events = require("events");
 var config = require('../lib/config');
 var emitter = new events.EventEmitter();
