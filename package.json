@@ -19,18 +19,14 @@
     "prepublish": "npm prune"
   },
   "engines": {
-    "node": ">= 0.4.9"
+    "node": ">= 0.6.1"
   },
   "dependencies": {
-    "backgrounder": ">= 0.2.7",
     "express": "2.5.0",
-    "jqtpl": "1.0.7",
-    "connect": "1.7.2",
-    "underscore": "1.2.1",
-    "mongodb": "0.9.6-23",
-    "jolokia-client": ">= 0.0.7"
-  },
-  "devDependencies": {
-    "v8-profiler": "0.0.3"
+    "connect": "1.7.3",
+    "underscore": "1.2.2",
+    "hbs": "1.0.1",
+    "mongodb": "0.9.7-0",
+    "jolokia-client": "0.0.8"
   }
 }
