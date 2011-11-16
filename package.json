@@ -18,6 +18,10 @@
     "test": "make test",
     "prepublish": "npm prune"
   },
+  "bugs": {
+    "mail": "dev@jolira.com",
+    "url": "http://github.com/jolira/server-tracker/issues"
+  },
   "engines": {
     "node": ">= 0.4.9"
   },
@@ -25,10 +29,10 @@
     "backgrounder": ">= 0.2.7",
     "express": "2.5.0",
     "jqtpl": "1.0.7",
-    "connect": "1.7.2",
-    "underscore": "1.2.1",
-    "mongodb": "0.9.6-23",
-    "jolokia-client": ">= 0.0.7"
+    "connect": "1.7.3",
+    "underscore": "1.2.2",
+    "mongodb": "0.9.7-0",
+    "jolokia-client": "0.0.8"
   },
   "devDependencies": {
     "v8-profiler": "0.0.3"
