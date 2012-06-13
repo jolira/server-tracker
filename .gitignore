@@ -6,5 +6,6 @@ target
 MANIFEST.MF
 CVS
 .cvsignore
+.idea
 *.log
 node_modules
